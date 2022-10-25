@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Spring Locations</title>
+
+    <!--put your external stylesheet links here-->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="lib/leaflet.css">
+
+</head>
+
+<body>
+    <!--put your initial page content here-->
+    <div id="map"></div>
+    <div id="pointPanel"><p>Point Clicked:</p></div>
+    <div id="springStatsPanel"></div>
+
+    <!--put your external script links here-->
+    <script type="text/javascript" src="lib/leaflet.js"></script>
+    <script type="text/javascript" src="lib/jquery-3.6.1.js"></script>
+    <script type="text/javascript" src="js/data_toMap.js"></script> 
+    <script type="text/javascript" src="https://unpkg.com/@mapbox/leaflet-pip@latest/leaflet-pip.js"></script> 
+    
+    <div id="toggles">
+    <label><input type='checkbox' onclick='background_toggle(this);' checked>Background</label>  
+    <label><input type='checkbox' onclick='springs_toggle(this);' checked>Springs</label>
+    <label><input type='checkbox' onclick='drainage_toggle(this);'>Streams</label>
+    <label><input type='checkbox' onclick='drainage_toggle(this);' checked>Water Drainages</label>
+    <label><input type='checkbox' onclick='geology_toggle(this);'>Geology</label>
+    <label><input type='checkbox' onclick='geology_toggle(this);'>Soils</label>
+    </div>
+</body>
+
+</html>

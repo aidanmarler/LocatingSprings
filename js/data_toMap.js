@@ -4,6 +4,9 @@
 var map;
 var drainage_layer;
 var pointObject = { coordinates: null, drainage_name: null, geol_layer: null };
+
+const gatherSpringData = false;
+
 // define layers
 var studyArea_layer;
 var drainage_layer;
@@ -129,16 +132,20 @@ function getSpringData(map) {
         dataType: "json",
         success: function (response) {
             springs_NE_layer = L.geoJSON(response)
-            
-            for (var layer in springs_NE_layer._layers) {
-                var pointHolder = { coordinates: null, drainage_name: null, geol_layer: null };
-                var lat = springs_NE_layer._layers[layer].feature.geometry.coordinates[1];
-                var lon = springs_NE_layer._layers[layer].feature.geometry.coordinates[0];
-                assignPointProperties(lat, lon, pointHolder)
-                springs_NE_data.push(pointHolder)
-              }
-              
-            console.log(springs_NE_data)
+
+            if (gatherSpringData === true) {
+
+                for (var layer in springs_NE_layer._layers) {
+                    var pointHolder = { coordinates: null, drainage_name: null, geol_layer: null };
+                    var lat = springs_NE_layer._layers[layer].feature.geometry.coordinates[1];
+                    var lon = springs_NE_layer._layers[layer].feature.geometry.coordinates[0];
+                    assignPointProperties(lat, lon, pointHolder)
+                    springs_NE_data.push(pointHolder)
+                };
+
+                console.log(springs_NE_data)
+            };
+
 
             createSpringSymbols(response);
             //springs_NE_layer.addTo(map)
@@ -150,16 +157,21 @@ function getSpringData(map) {
         dataType: "json",
         success: function (response) {
             springs_SD_layer = L.geoJSON(response)
-            
-            for (var layer in springs_SD_layer._layers) {
-                var pointHolder = { coordinates: null, drainage_name: null, geol_layer: null };
-                var lat = springs_SD_layer._layers[layer].feature.geometry.coordinates[1];
-                var lon = springs_SD_layer._layers[layer].feature.geometry.coordinates[0];
-                assignPointProperties(lat, lon, pointHolder)
-                springs_SD_data.push(pointHolder)
-              }
-              
-            console.log(springs_SD_data)
+
+
+            if (gatherSpringData === true) {
+                for (var layer in springs_SD_layer._layers) {
+                    var pointHolder = { coordinates: null, drainage_name: null, geol_layer: null };
+                    var lat = springs_SD_layer._layers[layer].feature.geometry.coordinates[1];
+                    var lon = springs_SD_layer._layers[layer].feature.geometry.coordinates[0];
+                    assignPointProperties(lat, lon, pointHolder)
+                    springs_SD_data.push(pointHolder)
+                };
+
+                console.log(springs_SD_data)
+            };
+
+
             createSpringSymbols(response);
             //springs_SD_layer = L.geoJSON(response, { style: springs_style })
             //springs_SD_layer.addTo(map)

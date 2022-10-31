@@ -128,22 +128,28 @@ function getData(map) {
 };
 
 function getSpringData(map) {
+
     $.ajax("data/springs_NE_point.geojson", {
         dataType: "json",
         success: function (response) {
+
+            var pointString = "permanent_ID, Lat, Lon, Drainage Name, Geologic Layer \n"
+
             springs_NE_layer = L.geoJSON(response)
 
             if (gatherSpringData === true) {
-
                 for (var layer in springs_NE_layer._layers) {
+                    var permanentID = springs_NE_layer._layers[layer].feature.properties.permanent_
                     var pointHolder = { coordinates: null, drainage_name: null, geol_layer: null };
                     var lat = springs_NE_layer._layers[layer].feature.geometry.coordinates[1];
                     var lon = springs_NE_layer._layers[layer].feature.geometry.coordinates[0];
                     assignPointProperties(lat, lon, pointHolder)
-                    springs_NE_data.push(pointHolder)
+                    pointString += permanentID + ", " + pointHolder.coordinates.lat + ", " + pointHolder.coordinates.long + ",  " + pointHolder.drainage_name + ", " + pointHolder.geol_layer +"\n"
+                    //console.log(pointString)
+                    springs_NE_data.push(pointString);
                 };
 
-                console.log(springs_NE_data)
+                console.log(pointString)
             };
 
 
@@ -153,22 +159,28 @@ function getSpringData(map) {
             //springs_NE_layer.addTo(map)
         }
     });
+
     $.ajax("data/springs_SD_point.geojson", {
         dataType: "json",
         success: function (response) {
-            springs_SD_layer = L.geoJSON(response)
 
+            var pointString = "permanent_ID, Lat, Lon, Drainage Name, Geologic Layer \n"
+
+            springs_SD_layer = L.geoJSON(response)
 
             if (gatherSpringData === true) {
                 for (var layer in springs_SD_layer._layers) {
+                    var permanentID = springs_SD_layer._layers[layer].feature.properties.permanent_identifier
                     var pointHolder = { coordinates: null, drainage_name: null, geol_layer: null };
                     var lat = springs_SD_layer._layers[layer].feature.geometry.coordinates[1];
                     var lon = springs_SD_layer._layers[layer].feature.geometry.coordinates[0];
                     assignPointProperties(lat, lon, pointHolder)
-                    springs_SD_data.push(pointHolder)
+                    pointString += permanentID + ", " + pointHolder.coordinates.lat + ", " + pointHolder.coordinates.long + ",  " + pointHolder.drainage_name + ", " + pointHolder.geol_layer +"\n"
+                    //console.log(springs_SD_layer._layers[layer].feature.properties)
+                    springs_SD_data.push(pointString);
                 };
 
-                console.log(springs_SD_data)
+                console.log(pointString)
             };
 
 

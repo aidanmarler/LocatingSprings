@@ -59,7 +59,7 @@ a:active {
 #pointPanel {
   background-color: rgb(0, 0, 0);
   border: medium solid rgb(255, 255, 255);
-  width: 34%;
+  width: 57%;
   height: 445px;
   float: right;
   margin: 200px 200px 200 200;
@@ -83,14 +83,14 @@ a:active {
 
 #map {
   height: 450px;
-  width: 65%;
+  width: 42%;
   display: inline-block;
 
 }
 
 #statsPanel {
   height: 40px;
-  width: 33.5%;
+  width: 57%;
   display: inline-block;
   background-color: rgb(0, 0, 0);
 }

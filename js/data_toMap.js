@@ -35,11 +35,12 @@ var background_style = {
 
 // bedrock geology
 var geology_style = {
-    fillColor: "green",
+    //fillColor: "green",
+    //fillColor: geolgy_colorize,
     weight: 1,
     opacity: 1,
-    color: 'green',
-    fillOpacity: .2
+    color: 'grey',
+    fillOpacity: .5
 }
 
 //create marker options
@@ -52,6 +53,22 @@ var springs_style = {
     radius: 5
 };
 
+//calculate color of geologic layer
+function calcGeologyColor(type) {
+    if (type === "Pierre Shale") {
+        return "Orange"
+    } else if (type === "Ogallala Group") {
+        return "Blue"
+    } else if (type === "White River Group") {
+        return "White"
+    } else if (type === "Niobrara Formation") {
+        return "Yellow"
+    } else if (type === "Arikaree Group") {
+        return "Red"
+    } else {
+        return "Black"
+    }
+}
 
 // BASE FUNCTIONS
 // Create map
@@ -60,7 +77,7 @@ function createMap() {
     //create the map
     map = L.map('map', {
         center: [42.755, -99.7],
-        zoom: 8
+        zoom: 10
     });
 
     //add the leaflet tilelayer to the map
@@ -94,8 +111,16 @@ function getData(map) {
     $.ajax("data/poly_geology.geojson", {
         dataType: "json",
         success: function (response) {
-            geol_NE_layer = L.geoJSON(response, { style: geology_style })
-            geol_NE_layer.addTo(map)
+            geol_NE_layer = L.geoJSON(response)
+            for (var polygon in response.features) {
+                var geologyType = (response.features[polygon].properties.NEW_LABEL)
+                geology_style.fillColor = calcGeologyColor(geologyType)
+                var layer = L.geoJSON(response.features[polygon], { style: geology_style })
+                layer.addTo(map)
+            }
+            //geology_style.fillColor = "green"//calcGeologyColor(response)
+            //geol_NE_layer = L.geoJSON(response, { style: geology_style })
+            //geol_NE_layer.addTo(map)
         }
     });
     //change this to a set of functions that specifically waits for one layer to load until loading the next

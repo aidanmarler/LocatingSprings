@@ -10,31 +10,48 @@
     <link rel="shortcut icon" href="#">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="lib/leaflet.css">
+    <link rel="stylesheet" href="css/d3.parcoords.css">
 
 </head>
 
 <body>
-    <!--put your initial page content here-->
+    <!--Create the title and subtitle spaces-->
+    <h1>Springs of Northern Nebraska</h1>
+    <!--<h2>Subtitle</h2>-->
+
+    <!--Create divs for the map, pcp, and heatmap-->
     <div id="map"></div>
-    <div id="springStatsPanel"></div>
-    <div id="my_dataviz"></div>
-    
-    <!--put your external script links here-->
+    <div id="pcp" class="parcoords" style="width:99%;height:40vh;margin-top:0vh;margin-left:.5%;"></div>
+    <div id="heatmap"></div>
+
+    <!--leaflet and geojson external scripts-->
     <script type="text/javascript" src="lib/leaflet.js"></script>
     <script type="text/javascript" src="lib/jquery-3.6.1.js"></script>
-    <script src="https://d3js.org/d3.v4.js"></script>
-    <script type="text/javascript" src="js/data_toMap.js"></script> 
+    <script type="text/javascript" src="lib/leaflet-omnivore.min.js"></script>
+    <script type="text/javascript" src="lib/geojson.min.js"></script>
+    <!--Load d3.v6.js, then store it as d3.v6-->
+    <script src="lib/d3.v6.js"></script>
+    <script>
+        var d3v6 = window.d3;
+        window.d3 = null;
+    </script>
+    <!--Load more external scripts for d3.v3, pcp depedencies, and pip scripts-->
+    <script type="text/javascript" src="lib/d3.min.js"></script>
+    <script type="text/javascript" src="lib/d3.parcoords.js"></script>
+    <script type="text/javascript" src="lib/leaflet-pip.js"></script>
+    <!--Load Scripts for the actual pcp, map, and heatmap-->
+    <script type="text/javascript" src="js/pcp.js"></script>
+    <script type="text/javascript" src="js/data_toMap.js"></script>
     <script type="text/javascript" src="js/heatmap.js"></script>
-    <script type="text/javascript" src="https://unpkg.com/@mapbox/leaflet-pip@latest/leaflet-pip.js"></script> 
-    
 
+    <!--Create a div for toggling map layers-->
     <div id="toggles">
-    <label><input type='checkbox' onclick='background_toggle(this);' checked>Background</label>  
-    <label><input type='checkbox' onclick='springs_toggle(this);' checked>Springs</label>
-    <label><input type='checkbox'>Streams</label>
-    <label><input type='checkbox' onclick='geology_toggle(this);' checked>Geology</label>
-    <label><input type='checkbox'>Soils</label>
+        <label><input type='checkbox' onclick='background_toggle(this);' checked>Background</label>
+        <label><input type='checkbox' onclick='geology_toggle(this);' checked>Geology</label>
+        <label><input type='checkbox' onclick='elev_toggle(this);' unchecked>Elevation</label>
+        <label><input type='checkbox' onclick='slope_toggle(this);' unchecked>Slope</label>
     </div>
+
 </body>
 
 </html>

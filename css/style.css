@@ -1,6 +1,5 @@
-
 body {
-  background-color: rgb(57, 52, 48);
+  background-color: rgb(62, 63, 65);
   font: 14px sans-serif;
   color: azure;
   font-weight: normal;
@@ -8,23 +7,27 @@ body {
 }
 
 h1 {
-  font: 38px sans-serif;
-  
-  background: rgb(0, 0, 0); 
-  height: 40px;
+  margin-top: 0%;
+  font: 30px sans-serif;
+  background: rgb(0, 0, 0);
+  height: 37px;
+  margin-left: 20%;
+  width: 60%;
   text-align: center;
-  padding: 12px;
+  padding: 6px;
   font-weight: normal;
   font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
 
 h2 {
-  font: 18px sans-serif;
+  font: 16px sans-serif;
   color: azure;
-  background: rgb(0, 0, 0); 
+  background: rgba(0, 0, 0, 0.794);
   height: 20px;
+  margin-left: 15%;
+  width: 70%;
   text-align: center;
-  padding: 4px;
+  padding: 2px;
   font-weight: bold;
   font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
@@ -58,19 +61,19 @@ a:active {
 .leaflet-popup-content p {
   text-align: center;
   margin: 0.0em 0;
-  background-color: rgba(255, 255, 255, 0.838); 
+  background-color: rgba(255, 255, 255, 0.909);
   font: 10px sans-serif;
   font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
 
-#toggles{
+#toggles {
   position: absolute;
-  top: 610px;
+  top: 90%;
   z-index: 9999;
   text-align: left;
-  width: 312px;
-  left: 2%;
-  background-color: rgba(255, 255, 255, 0.822);
+  width: 262px;
+  right: 29%;
+  background-color: rgba(255, 255, 255, 0.844);
   border: medium solid rgba(255, 255, 255, 0.204);
   color: rgb(0, 0, 0);
   font: 12px sans-serif;
@@ -80,7 +83,19 @@ a:active {
 #map {
   position: absolute;
   left: 1%;
-  top: 410px;
-  height: 230px;
-  width: 98%;
+  top: 53%;
+  height: 300px;
+  width: 70%;
+}
+
+#heatmap {
+  position: absolute;
+  text-align: center;
+  left: 72%;
+  top: 53%;
+  height: 300px;
+  width: 27%;
+  background-color: rgb(0, 0, 0);
+  font: 16px sans-serif;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }

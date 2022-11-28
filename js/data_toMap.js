@@ -2,7 +2,7 @@
 
 // if true, will run the collectSpringPointData function.
 // may take several minutes
-const gatherSpringData = false;
+//const gatherSpringData = false;
 
 //declare map variable globally so all functions have access
 let map;
@@ -11,12 +11,15 @@ let pointObject = { coordinates: null, geol_layer: null };
 // define layers
 let pointClick_layer = L.circleMarker(); // svg point for where the user clicks
 let studyArea_layer; // white background
-let geol_layer_main; // used in the point click function
+let geol_layer_main; // used in the point click functioN
 let springs_layer_main; // used for itterating though springs to retrive data about them
+let elev_layer_main; // used in the point click function
+let slope_layer_main; // used in the point click function
 let geology_layers = []; // used for visualization of geology
 let spring_layers = []; // used for visualization of springs
-// let hydroGroup_layers = [];
-// let probability_layers = [];
+let elev_layers = []; // used for visualization of elevation
+let slope_layers = []; // used for visualization of slope
+
 
 // MAIN - calls functions createMap and getData
 function main() {
@@ -55,26 +58,36 @@ function createMap() {
     //create the "on click" function to retrieve data for any point
     map.on('click', function (e) {
 
+        // Get properties of each layer for any point clicked
         assignPointProperties(e.latlng.lat, e.latlng.lng, pointObject);
 
-        let latlng = L.latLng(e.latlng.lat, e.latlng.lng);
-
+        // use assigned point properties to get popupContent
         let popupContent = displayPointObject(pointObject, pointClick_layer);
 
+        // create a leaflet latlng object from lat and long values
+        let latlng = L.latLng(e.latlng.lat, e.latlng.lng);
+
+        // set a delay of 0 to place marker
+        // this is a bugfix
         setTimeout(() => placeMarker(), 0);
         function placeMarker() {
+            // if a marker is supposed to be placed then...
             if (canPlaceMarker === true) {
+                // if a marker isnt placed, then place a marker
                 if (pointClick_layer._latlng === undefined) {
                     // define pointClick_layer and add to map
                     pointClick_layer = L.circleMarker(latlng, marker_style);
                     pointClick_layer.addTo(map);
+                    marker_hover();
+                // if a marker is placed, then move it to the new location
                 } else {
                     // change point location with setLatLng
                     pointClick_layer.setLatLng(latlng);
+                    pointClick_layer.bringToFront();
                 }
+                // bind popup with popup content as created above
                 pointClick_layer.bindPopup(popupContent);
             }
-
         }
 
 
@@ -93,38 +106,51 @@ function createMap() {
 
     });
 
-
+    // on click of the marker, remove it from the map and set the marker layer to be empty    
     function marker_clickOn(e) {
         pointClick_layer.remove(map)
         pointClick_layer = L.circleMarker();
         canPlaceMarker = true;
-
     }
 
+    // bool for hovering over marker
     let isOverMarker = false;
 
+    // on mouse over marker, make it so you can't place one down (so that you instead remove it if clicked)
     function marker_mouseOver(e) {
         canPlaceMarker = false;
-        isOverMarker = true;
-        setTimeout(() => showPopup(), 400);
-        function showPopup() {
-            if (isOverMarker === true) {
-                pointClick_layer.openPopup();
-            }
-        }
-
+        marker_hover();
     }
 
+    // On hover (called after placement and on mouse over)
+    function marker_hover() {
+        // set hovering to true
+        isOverMarker = true;
+        // delay .3 seconds
+        setTimeout(() => showPopup(), 300);
+        function showPopup() {
+            // if still hovering after .3 seconds, show the popupcontents for the marker
+            if (isOverMarker === true) {
+                pointClick_layer.openPopup();
+                pointClick_layer.bringToFront();
+            }
+        }
+    };
+
+    // On mouse out, turn off hovering so that the popup is not displayed
     function marker_mouseOut(e) {
         isOverMarker = false;
         canPlaceMarker = true;
     }
 
+    // On spring click...
     function spring_clickOn(e) {
+        // if active, set to inactive
         if (e.target.isActive === true) {
             e.target.isActive = false;
             e.target.setStyle(springs_style);
             return false
+        // if inactive, set to active
         } else {
             e.target.isActive = true;
             e.target.setStyle(background_style);
@@ -133,19 +159,23 @@ function createMap() {
 
     }
 
+    // if hovering over a marker, make it so a marker cannot be placed
     function spring_mouseOver(e) {
         canPlaceMarker = false;
     }
 
+    // if not hovering, set a marker so that it can be placed
     function spring_mouseOut(e) {
         canPlaceMarker = true;
     }
 
+    // set basemaps to the defined dark and elevation maps from before.
     var baseMaps = {
         "Terrain": elevLayer,
         "Dark": darkLayer
     };
 
+    // create a layer control to toggle between basemaps and add it to the map
     var layerControl = L.control.layers(baseMaps).addTo(map);
 };
 
@@ -187,7 +217,48 @@ function getData(map) {
         });
     };
 
+    //Load the elevation layer as invisible in inactive style
+    function getElevation() {
+        return $.ajax("data/poly_elev.geojson", {
+            dataType: "json",
+            success: function (response) {
+                elev_layer_main = L.geoJSON(response)
+                for (var polygon in response.features) {
+                    // use specific geology style in createing a new var for that layer
+                    var layer = L.geoJSON(response.features[polygon], { style: inactive_style })
+                    //push that layer to a list
+                    elev_layers.push(layer)
+                    //console.log(layer._layers[leafletID-1])
+                }
+                for (var layer in elev_layers) {
+                    elev_layers[layer].addTo(map)
+                }
+            }
+        });
+    };
 
+    
+    //Load the elevation layer as invisible in inactive style
+    function getSlope() {
+        return $.ajax("data/poly_slope.geojson", {
+            dataType: "json",
+            success: function (response) {
+                slope_layer_main = L.geoJSON(response)
+                for (var polygon in response.features) {
+                    // use specific geology style in createing a new var for that layer
+                    var layer = L.geoJSON(response.features[polygon], { style: inactive_style })
+                    //push that layer to a list
+                    slope_layers.push(layer)
+                    //console.log(layer._layers[leafletID-1])
+                }
+                for (var layer in slope_layers) {
+                    slope_layers[layer].addTo(map)
+                }
+            }
+        });
+    };
+
+    
     // Funtion to get point data on springs
     function getSpringData(map) {
 
@@ -210,7 +281,7 @@ function getData(map) {
                     spring_layers.push(layer)
                 }
                 for (var layer in spring_layers) {
-                    spring_layers[layer].addTo(map)
+                    //spring_layers[layer].addTo(map)
                 }
             }
         });
@@ -227,14 +298,18 @@ function getData(map) {
     //change this to a set of functions that specifically waits for one layer to load until loading the next
     async function asyncCall() {
         await getBasemap();
+        await getSlope();
+        await getElevation();
         await getGeology();
         getSpringData(map);
+        createPCP();
     };
 
     asyncCall();
 
 };
 
+/*
 // when gatherSpringData = true, it will print a string of info for each spring point
 function collectSpringPointData(springs_layer) {
     var pointString = "permanent_ID, Lat, Lon, Geologic Layer, Geology Code, Drainage Class, Hydrologic Group, Available Water Storage (0-150cm), Elevation (m), Slope \n"
@@ -259,7 +334,7 @@ function collectSpringPointData(springs_layer) {
     };
 
     console.log(pointString)
-};
+};*/
 
 // given coordinates, get data to store in the pointObject
 // this is used in the on click function and collectSpringPointData function
@@ -267,29 +342,29 @@ function assignPointProperties(latVal, lonVal, object) {
     var pointCoordinates = { lat: latVal, long: lonVal }
     object.coordinates = pointCoordinates
 
+    // Get geology at point or return NA
     if (leafletPip.pointInLayer([lonVal, latVal], geol_layer_main)[0]) {
-        var geolNEResults = leafletPip.pointInLayer([lonVal, latVal], geol_layer_main);
-        object.geol_layer = geolNEResults[0].feature.properties.NEW_LABEL
-        var code
-        //Arikaree Group, Niobrara Formation, Ogallala Group, Pierre Shale, White River Group, and Other.
-        if (object.geol_layer === "Arikaree Group") {
-            code = 2
-        } else if (object.geol_layer === "Niobrara Formation") {
-            code = 3
-        } else if (object.geol_layer === "Ogallala Group") {
-            code = 4
-        } else if (object.geol_layer === "Pierre Shale") {
-            code = 5
-        } else if (object.geol_layer === "White River Group") {
-            code = 6
-        } else (
-            code = 1
-        )
-        object.geol_code = code
+        var geolResults = leafletPip.pointInLayer([lonVal, latVal], geol_layer_main);
+        object.geol_layer = geolResults[0].feature.properties.NEW_LABEL
     } else {
         object.geol_layer = "NA"
     }
+    // Get elevation range at point or return NA
+    if (leafletPip.pointInLayer([lonVal, latVal], elev_layer_main)[0]) {
+        var elevResults = leafletPip.pointInLayer([lonVal, latVal], elev_layer_main);
+        object.elev_layer = elevResults[0].feature.properties.elevRange
+    } else {
+        object.elev_layer = "NA"
+    }
+    // Get slope range at point or return NA
+    if (leafletPip.pointInLayer([lonVal, latVal], slope_layer_main)[0]) {
+        var slopeResults = leafletPip.pointInLayer([lonVal, latVal], slope_layer_main);
+        object.slope_layer = slopeResults[0].feature.properties.slopeRange
+    } else {
+        object.slope_layer = "NA"
+    }
 };
+
 
 
 // LAYER STYLES
@@ -321,6 +396,7 @@ var geology_style = {
     fillOpacity: .5
 }
 
+/*
 //create marker options
 var springs_style = {
     fillColor: "navy",
@@ -329,34 +405,78 @@ var springs_style = {
     opacity: 1,
     fillOpacity: 1,
     radius: 5
-};
+}; */
 
 //create marker options
 var marker_style = {
-    fillColor: "cyan",
-    color: "black",
-    weight: 1,
+    fillColor: "navy",
+    color: "white",
+    weight: 1.5,
     opacity: 1,
     fillOpacity: 1,
     radius: 6
 };
 
+
+// Calculate layer colors
 //calculate color of geologic layer
 function calcGeologyColor(type) {
     if (type === "Pierre Shale") {
-        return "Green"
+        return "#9A7F32"
     } else if (type === "Ogallala Group") {
-        return "Orange"
+        return "#466C39"
     } else if (type === "White River Group") {
-        return "White"
+        return "#C88344"
     } else if (type === "Niobrara Formation") {
-        return "Red"
+        return "#F18666"
     } else if (type === "Arikaree Group") {
-        return "Brown"
+        return "#6E7831"
     } else {
         return "Black"
     }
 }
+
+//calculate color of geologic layer
+function calcElevColor(type) {
+    if (type === 1) {
+        return "#ffffff"
+    } else if (type === 2) {
+        return "#dddddd"
+    } else if (type === 3) {
+        return "#b9b9b9"
+    } else if (type === 4) {
+        return "#989898"
+    } else if (type === 5) {
+        return "#777777"
+    } else if (type === 6) {
+        return "#595959"
+    } else if (type === 7) {
+        return "#3b3b3b"
+    } else if (type === 8) {
+        return "#222222"
+    } else if (type === 9) {
+        return "#000000"
+    } else {
+        return "Black"
+    }
+}
+
+//calculate color of geologic layer
+function calcSlopeColor(type) {
+    if (type === 1) {
+        return "#000000"
+    } else if (type === 2) {
+        return "#4e4e4e"
+    } else if (type === 3) {
+        return "#a3a3a3"
+    } else if (type === 4) {
+        return "#ffffff"
+    } else {
+        return "Red"
+    }
+}
+
+
 
 // TOGGLE LAYERS
 // shows/hides background layer based on checkbox
@@ -398,6 +518,57 @@ function geology_toggle(cb) {
 
 };
 
+// shows/hides geology layers based on checkbox
+function elev_toggle(cb) {
+
+    // if show geology is TRUE then...
+    if (cb.checked === true) {
+        // itterate through geology layers...
+        for (var layer in elev_layers) {
+            // use leaflet ID to access layer data
+            let leafletID = (elev_layers[layer]._leaflet_id - 1)
+            let elevType = (elev_layers[layer]._layers[leafletID].feature.properties.Id)
+            // use layer data to assign color based on geology type
+            geology_style.fillColor = calcElevColor(elevType)
+            // set each layer to geology style
+            elev_layers[layer].setStyle(geology_style)
+        }
+        // if show geology is FALSE then...
+    } else if (cb.checked === false) {
+        // itterate through geology layers...
+        for (var layer in elev_layers) {
+            // set each layer to inactive style
+            elev_layers[layer].setStyle(inactive_style)
+        }
+    }
+};
+
+// shows/hides geology layers based on checkbox
+function slope_toggle(cb) {
+
+    // if show geology is TRUE then...
+    if (cb.checked === true) {
+        // itterate through geology layers...
+        for (var layer in slope_layers) {
+            // use leaflet ID to access layer data
+            let leafletID = (slope_layers[layer]._leaflet_id - 1)
+            let elevType = (slope_layers[layer]._layers[leafletID].feature.properties.Id)
+            // use layer data to assign color based on geology type
+            geology_style.fillColor = calcSlopeColor(elevType)
+            // set each layer to geology style
+            slope_layers[layer].setStyle(geology_style)
+        }
+        // if show geology is FALSE then...
+    } else if (cb.checked === false) {
+        // itterate through geology layers...
+        for (var layer in slope_layers) {
+            // set each layer to inactive style
+            slope_layers[layer].setStyle(inactive_style)
+        }
+    }
+};
+
+/*
 // shows/hides spring layers based on checkbox
 function springs_toggle(cb) {
     if (cb.checked === true) {
@@ -410,14 +581,15 @@ function springs_toggle(cb) {
         }
     }
 };
+*/
 
-//  
+// assembles pointPropeties properties into a cohesive popup prompt called panelContents
+// returns panelContents
 function displayPointObject(pointProperties) {
     var panelContents = "";
-    panelContents += "<p>Probability: <b>0.0%" + "" + "</b>, "
-    panelContents += "Confidence:  <b>0.0%" + "</b></p>";
-    panelContents += "<p>Geology: <b>" + pointProperties.geol_layer + "</b>, ";
-    panelContents += "Hydrologic Group: <b>X" + "</b></p>";
+    panelContents += "<p>Geology: <b>" + pointProperties.geol_layer + "</b></p>";
+    panelContents += "<p>Slope:  <b>" + pointProperties.slope_layer + "°</b>, ";
+    panelContents += "Elevation: <b>" + pointProperties.elev_layer + " meters</b></p>"
     panelContents += "<p>Lat: <b>" + pointProperties.coordinates.lat.toFixed(3) + "</b>, ";
     panelContents += "Long: <b>" + pointProperties.coordinates.long.toFixed(3) + "</b></p>";
     return panelContents;

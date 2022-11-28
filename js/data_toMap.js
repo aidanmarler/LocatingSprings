@@ -388,12 +388,10 @@ var background_style = {
 
 // bedrock geology
 var geology_style = {
-    //fillColor: "green",
-    //fillColor: geolgy_colorize,
     weight: 1,
     opacity: 0,
     color: 'grey',
-    fillOpacity: .5
+    fillOpacity: .7
 }
 
 /*

@@ -1,7 +1,7 @@
 # LocatingSprings
-##GEOG 4043 Final Project
+## GEOG 4043 Final Project
 
-####This is a tool that allows you to look at springs in northern Nebraska.
+#### This is a tool that allows you to look at springs in northern Nebraska.
 
 There are three plots: a parallel coordinate plot (PCP) in white, a map of the study area, and a heatmap.
 

@@ -10,3 +10,4 @@ GEOG 4043 Final Project
  - To filter the Parallel Coordinate Plot, click and drag on any of the axes.  To remove the filter, click anywhere on that access.
 
  - The heatmap shows the number of springs that exist in a certain geologic layer and hydrologic group.  
+ - Markers can be placed on the map by clicking.  To remove them, click on them.  To learn about this point, hover over the marker.

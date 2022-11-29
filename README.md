@@ -11,4 +11,4 @@ GEOG 4043 Final Project
 
  - The heatmap shows the number of springs that exist in a certain geologic layer and hydrologic group.  
 
- - Markers can be placed on the map by clicking.  To remove them, click on them.  To learn about this point, hover over the marker.
+ - Markers can be placed on the map by clicking.  To remove marker, click on it.  To learn about this point, hover over the marker.

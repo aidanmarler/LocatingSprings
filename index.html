@@ -21,8 +21,19 @@
 
     <!--Create divs for the map, pcp, and heatmap-->
     <div id="map"></div>
-    <div id="pcp" class="parcoords" style="width:99%;height:40vh;margin-top:0vh;margin-left:.5%;"></div>
-    <div id="heatmap"></div>
+    <div id="pcp" class="parcoords" style="width:99%;height:40vh;margin-top:0vh;margin-left:.5%;z-index: 2;"></div>
+    <div id="heatmap">
+        <!--Create divs for axis labels-->
+        <div id="heatmap_xAxis">Geologic Layer</div>
+        <div id="heatmap_yAxis">Hydrologic Group</div>
+    </div>
+    <!--Create divs for a help icon and a help window-->
+    <div id="helpIcon">
+        ?
+    </div>
+    <div id="helpWindow">
+    </div>
+    <div id="backdrop"></div>
 
     <!--leaflet and geojson external scripts-->
     <script type="text/javascript" src="lib/leaflet.js"></script>
@@ -43,6 +54,7 @@
     <script type="text/javascript" src="js/pcp.js"></script>
     <script type="text/javascript" src="js/data_toMap.js"></script>
     <script type="text/javascript" src="js/heatmap.js"></script>
+    <script type="text/javascript" src="js/helpPrompt.js"></script>
 
     <!--Create a div for toggling map layers-->
     <div id="toggles">

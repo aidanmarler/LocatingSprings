@@ -1,5 +1,5 @@
 // set the dimensions and margins of the graph
-const margin = { top: 20, right: 10, bottom: 30, left: 30 },
+const margin = { top: 20, right: 10, bottom: 40, left: 40 },
   width = 320 - margin.left - margin.right,
   height = 270 - margin.top - margin.bottom;
 
@@ -38,9 +38,7 @@ const myColor = d3v6.scaleLog()
   .domain([0, 1, 54]);
 
 //Read the data
-//d3v6.csv("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/heatmap_data.csv").then(function (data) {
 d3v6.csv("data/springs_matrix.csv").then(function (data) {
-  console.log(data)
   // create a tooltip
   const counter = d3v6.select("#heatmap")
     .append("div")
@@ -56,7 +54,7 @@ d3v6.csv("data/springs_matrix.csv").then(function (data) {
 
   const mousemove = function (event, d) {
     counter
-      .html(d.Count + " springs")
+      .html("<b>" + d.Count + "</b> springs")
       .style("left", (event.x) / 2 + "px")
       .style("top", (event.y) / 2 + "px")
       counter.style("color", "white")

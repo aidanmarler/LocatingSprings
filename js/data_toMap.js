@@ -268,10 +268,11 @@ function getData(map) {
                 // define springs layer as the leaflet geojson response
                 springs_layer_main = L.geoJSON(response)
 
+                /*
                 // Check to see if the program to collect and output spring data should be produced
                 if (gatherSpringData === true) {
                     collectSpringPointData(springs_layer_main)
-                };
+                }; */
 
                 // run function to create spring markers
                 for (var feature in response.features) {
@@ -394,7 +395,6 @@ var geology_style = {
     fillOpacity: .7
 }
 
-/*
 //create marker options
 var springs_style = {
     fillColor: "navy",
@@ -403,7 +403,7 @@ var springs_style = {
     opacity: 1,
     fillOpacity: 1,
     radius: 5
-}; */
+};
 
 //create marker options
 var marker_style = {

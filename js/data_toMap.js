@@ -7,6 +7,12 @@
 //declare map variable globally so all functions have access
 let map;
 let pointObject = { coordinates: null, geol_layer: null };
+let canPlaceMarker = true;
+const legend = document.getElementById("mapLegend");
+const legendLabels = document.getElementById("legend-labels");
+const legendTitle = document.getElementById("legend-title");
+const svgLegendColors = document.getElementById("svgColors");
+const toggles = document.getElementById("toggles");
 
 // define layers
 let pointClick_layer = L.circleMarker(); // svg point for where the user clicks
@@ -15,16 +21,24 @@ let geol_layer_main; // used in the point click functioN
 let springs_layer_main; // used for itterating though springs to retrive data about them
 let elev_layer_main; // used in the point click function
 let slope_layer_main; // used in the point click function
+let hydro_layer_main; // used in the point click function
 let geology_layers = []; // used for visualization of geology
 let spring_layers = []; // used for visualization of springs
 let elev_layers = []; // used for visualization of elevation
 let slope_layers = []; // used for visualization of slope
+let hydro_layers = []; // used for visualization of slope
 
+// these store what map layers are active so that the legend knows what to display
+let geol_active = true;
+let elev_active = false;
+let slope_active = false;
+let hydro_active = false;
 
 // MAIN - calls functions createMap and getData
 function main() {
-    createMap()
-    getData(map)
+    createMap();
+    getData(map);
+    legendDisplay();
 };
 
 // BASE FUNCTIONS
@@ -45,8 +59,6 @@ function createMap() {
         minZoom: 7,
         maxZoom: 16
     });
-
-    let canPlaceMarker = true;
 
     // create the map
     map = L.map('map', {
@@ -79,7 +91,7 @@ function createMap() {
                     pointClick_layer = L.circleMarker(latlng, marker_style);
                     pointClick_layer.addTo(map);
                     marker_hover();
-                // if a marker is placed, then move it to the new location
+                    // if a marker is placed, then move it to the new location
                 } else {
                     // change point location with setLatLng
                     pointClick_layer.setLatLng(latlng);
@@ -103,7 +115,6 @@ function createMap() {
             spring_layers[spring].on('mouseover', spring_mouseOver);
             spring_layers[spring].on('mouseout', spring_mouseOut);
         }
-
     });
 
     // on click of the marker, remove it from the map and set the marker layer to be empty    
@@ -150,7 +161,7 @@ function createMap() {
             e.target.isActive = false;
             e.target.setStyle(springs_style);
             return false
-        // if inactive, set to active
+            // if inactive, set to active
         } else {
             e.target.isActive = true;
             e.target.setStyle(background_style);
@@ -218,6 +229,26 @@ function getData(map) {
     };
 
     //Load the elevation layer as invisible in inactive style
+    function getHydro() {
+        return $.ajax("data/poly_hydro.geojson", {
+            dataType: "json",
+            success: function (response) {
+                hydro_layer_main = L.geoJSON(response)
+                for (var polygon in response.features) {
+                    // use specific geology style in createing a new var for that layer
+                    var layer = L.geoJSON(response.features[polygon], { style: inactive_style })
+                    //push that layer to a list
+                    hydro_layers.push(layer)
+                    //console.log(layer._layers[leafletID-1])
+                }
+                for (var layer in hydro_layers) {
+                    hydro_layers[layer].addTo(map)
+                }
+            }
+        });
+    };
+
+    //Load the elevation layer as invisible in inactive style
     function getElevation() {
         return $.ajax("data/poly_elev.geojson", {
             dataType: "json",
@@ -237,7 +268,7 @@ function getData(map) {
         });
     };
 
-    
+
     //Load the elevation layer as invisible in inactive style
     function getSlope() {
         return $.ajax("data/poly_slope.geojson", {
@@ -258,7 +289,7 @@ function getData(map) {
         });
     };
 
-    
+
     // Funtion to get point data on springs
     function getSpringData(map) {
 
@@ -301,6 +332,7 @@ function getData(map) {
         await getBasemap();
         await getSlope();
         await getElevation();
+        await getHydro();
         await getGeology();
         getSpringData(map);
         createPCP();
@@ -363,6 +395,13 @@ function assignPointProperties(latVal, lonVal, object) {
         object.slope_layer = slopeResults[0].feature.properties.slopeRange
     } else {
         object.slope_layer = "NA"
+    }
+    // Get slope range at point or return NA
+    if (leafletPip.pointInLayer([lonVal, latVal], hydro_layer_main)[0]) {
+        var hydroResults = leafletPip.pointInLayer([lonVal, latVal], hydro_layer_main);
+        object.hydro_layer = hydroResults[0].feature.properties.hydgrpdcd
+    } else {
+        object.hydro_layer = "NA"
     }
 };
 
@@ -474,7 +513,21 @@ function calcSlopeColor(type) {
     }
 }
 
-
+//hydgrpdcd
+//calculate color of geologic layer
+function calcHydroColor(type) {
+    if (type === "A") {
+        return "#000000"
+    } else if (type === "B") {
+        return "#4e4e4e"
+    } else if (type === "C") {
+        return "#a3a3a3"
+    } else if (type === "D") {
+        return "#ffffff"
+    } else {
+        return "Red"
+    }
+}
 
 // TOGGLE LAYERS
 // shows/hides background layer based on checkbox
@@ -494,6 +547,7 @@ function geology_toggle(cb) {
 
     // if show geology is TRUE then...
     if (cb.checked === true) {
+        geol_active = true;
         // itterate through geology layers...
         for (var layer in geology_layers) {
             // use leaflet ID to access layer data
@@ -506,21 +560,21 @@ function geology_toggle(cb) {
         }
         // if show geology is FALSE then...
     } else if (cb.checked === false) {
+        geol_active = false;
         // itterate through geology layers...
         for (var layer in geology_layers) {
             // set each layer to inactive style
             geology_layers[layer].setStyle(inactive_style)
         }
     }
-
-
+    legendDisplay();
 };
 
 // shows/hides geology layers based on checkbox
 function elev_toggle(cb) {
-
     // if show geology is TRUE then...
     if (cb.checked === true) {
+        elev_active = true;
         // itterate through geology layers...
         for (var layer in elev_layers) {
             // use leaflet ID to access layer data
@@ -533,37 +587,68 @@ function elev_toggle(cb) {
         }
         // if show geology is FALSE then...
     } else if (cb.checked === false) {
+        elev_active = false;
         // itterate through geology layers...
         for (var layer in elev_layers) {
             // set each layer to inactive style
             elev_layers[layer].setStyle(inactive_style)
         }
     }
+    legendDisplay();
 };
 
 // shows/hides geology layers based on checkbox
 function slope_toggle(cb) {
-
     // if show geology is TRUE then...
     if (cb.checked === true) {
+        slope_active = true;
         // itterate through geology layers...
         for (var layer in slope_layers) {
             // use leaflet ID to access layer data
             let leafletID = (slope_layers[layer]._leaflet_id - 1)
-            let elevType = (slope_layers[layer]._layers[leafletID].feature.properties.Id)
+            let slopeType = (slope_layers[layer]._layers[leafletID].feature.properties.Id)
             // use layer data to assign color based on geology type
-            geology_style.fillColor = calcSlopeColor(elevType)
+            geology_style.fillColor = calcSlopeColor(slopeType)
             // set each layer to geology style
             slope_layers[layer].setStyle(geology_style)
         }
         // if show geology is FALSE then...
     } else if (cb.checked === false) {
+        slope_active = false;
         // itterate through geology layers...
         for (var layer in slope_layers) {
             // set each layer to inactive style
             slope_layers[layer].setStyle(inactive_style)
         }
     }
+    legendDisplay();
+};
+
+// shows/hides hyrdo group layers based on checkbox
+function hydro_toggle(cb) {
+    // if show geology is TRUE then...
+    if (cb.checked === true) {
+        hydro_active = true;
+        // itterate through geology layers...
+        for (var layer in hydro_layers) {
+            // use leaflet ID to access layer data
+            let leafletID = (hydro_layers[layer]._leaflet_id - 1)
+            let hydroType = (hydro_layers[layer]._layers[leafletID].feature.properties.hydgrpdcd)
+            // use layer data to assign color based on geology type
+            geology_style.fillColor = calcHydroColor(hydroType)
+            // set each layer to geology style
+            hydro_layers[layer].setStyle(geology_style)
+        }
+        // if show geology is FALSE then...
+    } else if (cb.checked === false) {
+        slope_active = false;
+        // itterate through geology layers...
+        for (var layer in hydro_layers) {
+            // set each layer to inactive style
+            hydro_layers[layer].setStyle(inactive_style)
+        }
+    }
+    legendDisplay();
 };
 
 /*
@@ -595,3 +680,72 @@ function displayPointObject(pointProperties) {
 
 // call main function
 $(document).ready(main);
+
+
+// On mouse over the legend or toggles, make it so you can't place a marker
+// On mouse over legend, set the icon to reflect that
+legend.addEventListener("mouseover", function () {
+    canPlaceMarker = false;
+    console.log
+});
+
+// On mouse out legend, set the icon back to normal
+legend.addEventListener("mouseout", function () {
+    canPlaceMarker = true;
+});
+
+// On mouse over toggles, set the icon to reflect that
+toggles.addEventListener("mouseover", function () {
+    canPlaceMarker = false;
+});
+
+// On mouse out toggles, set the icon back to normal
+toggles.addEventListener("mouseout", function () {
+    canPlaceMarker = true;
+});
+
+// Funtion to decide how to display the legend
+function legendDisplay() {
+    if (geol_active === true) {
+        legendTitle.innerHTML = "Geology"
+        let array = ["Ogallala Group", "Arikaree Group", "Pierre Shale", "White River Group", "Niobrara Formation"]
+        legendLabels.innerHTML = ""
+        array.forEach(item => createLabel(item));
+        function createLabel(item) {
+            legendLabels.innerHTML += "<li><span style=background:" + calcGeologyColor(item) + "></span>" + item + "</li>"
+        };
+        legend.style.zIndex = 999
+    } else if (hydro_active === true) {
+        legendTitle.innerHTML = "Hydrologic Group"
+        let array = ["A", "B", "C", "D", "ABC/D"]
+        legendLabels.innerHTML = ""
+        array.forEach(item => createLabel(item));
+        function createLabel(item) {
+            legendLabels.innerHTML += "<li><span style=background:" + calcHydroColor(item) + "></span>" + item + "</li>"
+        };
+        legend.style.zIndex = 999
+    } else if (elev_active === true) {
+        legendTitle.innerHTML = "Elevation"
+        let array = [1, 3, 5, 7, 9]
+        let labelsArray = ["352 - 528 meters", "", "655 - 781 meters", "", "899 - 1013 meters", "", "1123 - 1237 meters", "", "1361 - 1602 meters"]
+        legendLabels.innerHTML = ""
+        array.forEach(item => createLabel(item));
+        function createLabel(item) {
+            legendLabels.innerHTML += "<li><span style=background:" + calcElevColor(item) + "></span>" + labelsArray[item - 1] + "</li>"
+        };
+        legend.style.zIndex = 999
+    } else if (slope_active === true) {
+        legendTitle.innerHTML = "Slope"
+        let array = [1, 2, 3, 4]
+        let labelsArray = ["0 - 3°", "3 - 8°", "8 - 16°", "16 - 73°"]
+        legendLabels.innerHTML = ""
+        array.forEach(item => createLabel(item));
+        function createLabel(item) {
+            legendLabels.innerHTML += "<li><span style=background:" + calcSlopeColor(item) + "></span>" + labelsArray[item - 1] + "</li>"
+        };
+        legend.style.zIndex = 999
+    } else {
+        legend.style.zIndex = -1
+    }
+};
+//geology_style("Ogallala Group")

@@ -20,7 +20,29 @@
     <!--<h2>Subtitle</h2>-->
 
     <!--Create divs for the map, pcp, and heatmap-->
-    <div id="map"></div>
+    <div id="map">
+        <div id="mapLegend">
+            <div id='legend-title'>Title</div>
+            <div id='legend-scale'>
+                <ul id='legend-labels'>
+                    <li><span style='background:#8DD3C7;'></span>One</li>
+                    <li><span style='background:#FFFFB3;'></span>Two</li>
+                    <li><span style='background:#BEBADA;'></span>Three</li>
+                    <li><span style='background:#FB8072;'></span>Four</li>
+                    <li><span style='background:#80B1D3;'></span>etc</li>
+                </ul>
+            </div>
+        </div>
+        <!--Create a div for toggling map layers-->
+        <div id="toggles">
+            <label><input type='checkbox' onclick='background_toggle(this);' checked>Background</label>
+            <label><input type='checkbox' onclick='geology_toggle(this);' checked>Geology</label>
+            <label><input type='checkbox' onclick='hydro_toggle(this);' unchecked>Hydrologic Group</label>
+            <label><input type='checkbox' onclick='elev_toggle(this);' unchecked>Elevation</label>
+            <label><input type='checkbox' onclick='slope_toggle(this);' unchecked>Slope</label>
+        </div>
+    </div>
+    </div>
     <div id="pcp" class="parcoords" style="width:99%;height:40vh;margin-top:0vh;margin-left:.5%;z-index: 2;"></div>
     <div id="heatmap">
         <!--Create divs for axis labels-->
@@ -55,14 +77,6 @@
     <script type="text/javascript" src="js/data_toMap.js"></script>
     <script type="text/javascript" src="js/heatmap.js"></script>
     <script type="text/javascript" src="js/helpPrompt.js"></script>
-
-    <!--Create a div for toggling map layers-->
-    <div id="toggles">
-        <label><input type='checkbox' onclick='background_toggle(this);' checked>Background</label>
-        <label><input type='checkbox' onclick='geology_toggle(this);' checked>Geology</label>
-        <label><input type='checkbox' onclick='elev_toggle(this);' unchecked>Elevation</label>
-        <label><input type='checkbox' onclick='slope_toggle(this);' unchecked>Slope</label>
-    </div>
 
 </body>
 

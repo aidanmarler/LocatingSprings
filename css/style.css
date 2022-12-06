@@ -68,12 +68,12 @@ a:active {
 
 #toggles {
   position: absolute;
-  top: 90%;
+  bottom: 6%;
   z-index: 999;
   text-align: left;
-  width: 262px;
-  right: 29%;
-  background-color: rgba(255, 255, 255, 0.844);
+  width: 380px;
+  right: 0%;
+  background-color: rgba(255, 255, 255, 0.87);
   border: medium solid rgba(255, 255, 255, 0.204);
   color: rgb(0, 0, 0);
   font: 12px sans-serif;
@@ -148,7 +148,7 @@ a:active {
   background-color: rgb(216, 216, 216);
   border: medium solid rgb(255, 255, 255);
   border-width: 20px;
-  color:black;
+  color: black;
   top: 10%;
   left: 1%;
   font: 23px sans-serif;
@@ -164,4 +164,52 @@ a:active {
   width: 100%;
   height: 100%;
   z-index: -1;
+}
+
+#mapLegend {
+  position: absolute;
+  background-color: rgba(255, 255, 255, 0.87);
+  bottom: 15%;
+  right: 0%;
+  width: 120px;
+  height: 111px;
+  z-index: 999;
+  color: black;
+  font: 12px sans-serif;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+#mapLegend #legend-title {
+  text-align: left;
+  margin-bottom: 5px;
+  margin-left: 2px;
+  font-weight: bold;
+  font-size: 90%;
+}
+
+#mapLegend #legend-scale ul {
+  margin: 0;
+  margin-bottom: 5px;
+  padding: 0px;
+  float: left;
+  list-style: none;
+}
+
+#mapLegend #legend-scale ul li {
+  font-size: 80%;
+  list-style: none;
+  margin-left: 7px;
+  line-height: 15px;
+  margin-bottom: 4px;
+}
+
+#mapLegend ul#legend-labels li span {
+  display: block;
+  float: left;
+  height: 13px;
+  width: 18px;
+  margin-right: 5px;
+  margin-left: 0;
+  border: 1px solid rgb(0, 0, 0);
+  opacity: .7;
 }

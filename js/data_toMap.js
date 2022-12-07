@@ -641,7 +641,7 @@ function hydro_toggle(cb) {
         }
         // if show geology is FALSE then...
     } else if (cb.checked === false) {
-        slope_active = false;
+        hydro_active = false;
         // itterate through geology layers...
         for (var layer in hydro_layers) {
             // set each layer to inactive style
@@ -707,6 +707,7 @@ toggles.addEventListener("mouseout", function () {
 
 // Funtion to decide how to display the legend
 function legendDisplay() {
+    console.log(hydro_active)
     if (geol_active === true) {
         legendTitle.innerHTML = "Geology"
         let array = ["Ogallala Group", "Arikaree Group", "Pierre Shale", "White River Group", "Niobrara Formation"]

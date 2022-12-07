@@ -13,16 +13,35 @@ function createPCP() {
     .range(["steelblue", "brown"])
     .interpolate(d3.interpolateLab);
 
+
+  var colorcatag = function (d) {
+    if (d['Hydrologic Group'] === ' A') {
+      return "#72e4f8";
+    } else if (d['Hydrologic Group'] === ' B') {
+      return "#f7ce92";
+    } else if (d['Hydrologic Group'] === ' C') {
+      return "#c8d0ff";
+    } else if (d['Hydrologic Group'] === ' D') {
+      return "#bfdf8f";
+    } else if (d['Hydrologic Group'] === ' A/D') {
+      return "#ffbdfd";
+    } else if (d['Hydrologic Group'] === ' B/D') {
+      return "#ffbdc7";
+    } else {
+      return 'black';
+    }
+  };
+
   // return the appropriate color based on slope variable
-  var color = function(d) {return colorscale(d['Slope'])}
+  var color = function (d) { return colorscale(d['Slope']) }
 
   // initialize the PCP plot: assign color and alpha
   var parcoords = d3.parcoords()("#pcp")
-    .color(color)  // quantitative color scale
+    .color(colorcatag)  // quantitative color scale
     .alpha(0.6)
-  
+
   // load csv file an put it into the PCP
-  d3.csv('data/springs.csv', function(data) {
+  d3.csv('data/springs.csv', function (data) {
     parcoords
       .data(data)
       .hideAxis(["permanent_ID", "Lat", "Lon"])
@@ -30,7 +49,7 @@ function createPCP() {
       .shadows()
       .alpha(0.5)
       //enable the brushing
-      .brushMode("1D-axes") 
+      .brushMode("1D-axes")
       .reorderable()
       .interactive();
     // for the later highlighing operation
@@ -38,15 +57,15 @@ function createPCP() {
   });
 
   // on brushing, update the selected points with the most bass-ackwards method of deleting and re-adding layers
-  parcoords.on("brush", function() {
+  parcoords.on("brush", function () {
     //load the selected points to a variable, and convert them to a GeoJSON
     var selectedPoints = GeoJSON.parse(parcoords.brushed(), {
-      Point:   ['Lat', 'Lon'],
-      Include: ["permanent_ID", 'Lat', 'Lon', 
-                "Geologic Layer", 'Drainage Class', 'Hydrologic Group', 
-                'Available Water Storage (0-150cm)', "Elevation (m)", "Slope"]
+      Point: ['Lat', 'Lon'],
+      Include: ["permanent_ID", 'Lat', 'Lon',
+        "Geologic Layer", 'Drainage Class', 'Hydrologic Group',
+        'Available Water Storage (0-150cm)', "Elevation (m)", "Slope"]
     });
-    
+
     points.clearLayers(); // clear all the points from the Points layer
     points.addData(selectedPoints); // put the "selected points" into the Points layer
     pointCount = selectedPoints.features.length; // get the length of the selected points to use as # of points
@@ -66,14 +85,14 @@ function createPCP() {
     let Water = ""
     let Eleva = ""
     let Slope = feature.properties.Slope
-  
+
     //concatinate a big string with the HTML formatting and some headers
     let myString = "ID: " + IDs + " and " + "Slope: " + Slope
     layer.bindTooltip(myString);
 
     //run the highlighter code
     layer.on({
-      mouseover: highlightLine, 
+      mouseover: highlightLine,
       mouseout: resetHighlight
     })
   };
@@ -83,7 +102,7 @@ function createPCP() {
     //color the points based on selected property
     let fillColorVar = "#0C56C8";//"#668A66"
     let ringColorVar = "white";//"#228B22";
-    
+
     var geojsonMarkerOptions = {
       radius: 5,
       weight: 1,
@@ -92,7 +111,7 @@ function createPCP() {
       fillColor: fillColorVar,
       fillOpacity: 1
     };
-    
+
     var circleMarker = L.circleMarker(latlng, geojsonMarkerOptions);
     return circleMarker;
   }
@@ -131,17 +150,17 @@ function createPCP() {
 
 
   //some functions to control legend updating
-  legend.onAdd = function(map) {
+  legend.onAdd = function (map) {
     var div = L.DomUtil.create("div", "legend");
     div.innerHTML += "<b>Points Selected: </b><br>" + pointCount
     return div;
   };
 
-  legend.onRemove = function(map) {
+  legend.onRemove = function (map) {
     delete map.legend;
   };
 
-  legend.updateCount = function(str) {
+  legend.updateCount = function (str) {
     this.getContainer().innerHTML = "<b>Points Selected: </b><br>" + pointCount
   };
   legend.addTo(map);

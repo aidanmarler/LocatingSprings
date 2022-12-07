@@ -51,10 +51,16 @@ helpWindow.innerHTML += "<br><br>Jay Kong and Aidan Marler, Final Project for Dr
 helpWindow.innerHTML += "<br><br><font size='+2'><b>Parallel Coordinate Plot</b></font"
 helpWindow.innerHTML += "<br>The large lined graph is a <b>Parallel Coordinate Plot.</b>  "
 helpWindow.innerHTML += "It can be interacted with in a few ways"
-helpWindow.innerHTML += "<br> -It can be interacted with in a few ways"
-helpWindow.innerHTML += "<br> -It can be interacted with in a few ways"
+helpWindow.innerHTML += "<br> - To filter, click and drag on any of the verical axes.  To remove a filter, click anywhere else on that axis."
+helpWindow.innerHTML += "<br> - To reorder the axes, click and drag their label."
+helpWindow.innerHTML += "<br> - Hovering over any spring point on the map will display just that line.  "
 // Map Instructions
-
+helpWindow.innerHTML += "<br><br><font size='+2'><b>Map</b></font"
+helpWindow.innerHTML += "<br> "
+helpWindow.innerHTML += "It can be interacted with in a few ways"
+helpWindow.innerHTML += "<br> - To filter, click and drag on any of the verical axes.  To remove a filter, click anywhere else on that axis."
+helpWindow.innerHTML += "<br> - To reorder the axes, click and drag their label."
+helpWindow.innerHTML += "<br> - Hovering over any spring point on the map will display just that line.  "
 // Matrix Instructions
 
 // Further help, link the video

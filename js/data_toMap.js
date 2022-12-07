@@ -517,15 +517,15 @@ function calcSlopeColor(type) {
 //calculate color of geologic layer
 function calcHydroColor(type) {
     if (type === "A") {
-        return "#000000"
+        return "#3EC0D4"
     } else if (type === "B") {
-        return "#4e4e4e"
+        return "#D2AB6C"
     } else if (type === "C") {
-        return "#a3a3a3"
+        return "#A3ADED"
     } else if (type === "D") {
-        return "#ffffff"
+        return "#9CBB69"
     } else {
-        return "Red"
+        return "#ED99A4"
     }
 }
 
@@ -670,7 +670,8 @@ function springs_toggle(cb) {
 // returns panelContents
 function displayPointObject(pointProperties) {
     var panelContents = "";
-    panelContents += "<p>Geology: <b>" + pointProperties.geol_layer + "</b></p>";
+    panelContents += "<p>Geology: <b>" + pointProperties.geol_layer + "</b>, ";
+    panelContents += "Hydro Group: <b>" + pointProperties.hydro_layer + "</b></p>";
     panelContents += "<p>Slope:  <b>" + pointProperties.slope_layer + "°</b>, ";
     panelContents += "Elevation: <b>" + pointProperties.elev_layer + " meters</b></p>"
     panelContents += "<p>Lat: <b>" + pointProperties.coordinates.lat.toFixed(3) + "</b>, ";

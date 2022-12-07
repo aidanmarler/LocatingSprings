@@ -43,9 +43,16 @@ helpIcon.addEventListener("mouseout", function () {
 
 // Add text to fill the help prompt here!
 // Title
-helpWindow.innerHTML = "<b>This is an an app to help you find unmapped springs in Northern Nebraska.</b>"
+helpWindow.innerHTML = "<font size='+3'><b>Exploring the springs of Northern Nebraska</b></font>"
+
+helpWindow.innerHTML += "<br><br>Jay Kong and Aidan Marler, Final Project for Dr. Karimzadeh's Geog 4043"
+
 // PCP Instructions
-helpWindow.innerHTML += "<br><br>Good Luck!"
+helpWindow.innerHTML += "<br><br><font size='+2'><b>Parallel Coordinate Plot</b></font"
+helpWindow.innerHTML += "<br>The large lined graph is a <b>Parallel Coordinate Plot.</b>  "
+helpWindow.innerHTML += "It can be interacted with in a few ways"
+helpWindow.innerHTML += "<br> -It can be interacted with in a few ways"
+helpWindow.innerHTML += "<br> -It can be interacted with in a few ways"
 // Map Instructions
 
 // Matrix Instructions

@@ -49,18 +49,18 @@ helpWindow.innerHTML += "<br><br>Jay Kong and Aidan Marler, Final Project for Dr
 
 // PCP Instructions
 helpWindow.innerHTML += "<br><br><font size='+2'><b>Parallel Coordinate Plot</b></font"
-helpWindow.innerHTML += "<br>The large lined graph is a <b>Parallel Coordinate Plot.</b>  "
+helpWindow.innerHTML += "<br>The large lined graph is a <b>Parallel Coordinate Plot.</b>  Colors on this graph represent Hydrolic Groups."
 helpWindow.innerHTML += "It can be interacted with in a few ways"
 helpWindow.innerHTML += "<br> - To filter, click and drag on any of the verical axes.  To remove a filter, click anywhere else on that axis."
 helpWindow.innerHTML += "<br> - To reorder the axes, click and drag their label."
 helpWindow.innerHTML += "<br> - Hovering over any spring point on the map will display just that line.  "
+
 // Map Instructions
 helpWindow.innerHTML += "<br><br><font size='+2'><b>Map</b></font"
 helpWindow.innerHTML += "<br> "
 helpWindow.innerHTML += "It can be interacted with in a few ways"
-helpWindow.innerHTML += "<br> - To filter, click and drag on any of the verical axes.  To remove a filter, click anywhere else on that axis."
-helpWindow.innerHTML += "<br> - To reorder the axes, click and drag their label."
-helpWindow.innerHTML += "<br> - Hovering over any spring point on the map will display just that line.  "
+helpWindow.innerHTML += "<br> - By clicking on the map, a marker will be placed.  Information about this point can be querried by hoving over the marker."
+helpWindow.innerHTML += "<br> - The checkboxes allow you to set a layer on the map to be active or not.  They are transparent, allowing the visualization of multiple layers at once."
 // Matrix Instructions
 
 // Further help, link the video

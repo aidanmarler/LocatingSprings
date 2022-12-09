@@ -40,22 +40,22 @@ p {
 
 /* unvisited link */
 a:link {
-  color: rgb(172, 252, 255);
+  color: rgb(43, 50, 91);
 }
 
 /* visited link */
 a:visited {
-  color: rgb(211, 160, 234);
+  color: rgb(70, 41, 84);
 }
 
 /* mouse over link */
 a:hover {
-  color: rgb(196, 213, 255);
+  color: rgb(255, 255, 255);
 }
 
 /* selected link */
 a:active {
-  color: rgb(175, 255, 171);
+  color: rgb(0, 0, 0);
 }
 
 .leaflet-popup-content p {
